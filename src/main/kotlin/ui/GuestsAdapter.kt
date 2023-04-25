@@ -1,5 +1,6 @@
 package ui
 
+import data.model.Status
 import domain.GuestsUseCase
 
 class GuestsAdapter(
@@ -19,6 +20,13 @@ class GuestsAdapter(
                
             """.trimIndent()
             )
+        }
+    }
+
+    fun getGuestsWithStatus(status: Status)  {
+         val guestWithStatus = guestsUseCase.getGuestListByStatus(status)
+        for (guest in guestWithStatus){
+            println("У гостя ${guest.name} статус ${guest.status}")
         }
     }
 }
