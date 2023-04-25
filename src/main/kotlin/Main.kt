@@ -1,7 +1,7 @@
-fun main(args: Array<String>) {
-    println("Hello World!")
+fun main() {
+    val adapter = Di.createGuestAdapter()
 
-    // Try adding program arguments via Run/Debug configuration.
-    // Learn more about running applications: https://www.jetbrains.com/help/idea/running-applications.html.
-    println("Program arguments: ${args.joinToString()}")
+    adapter.getGuestByIdAndPrintInfo(1)
+    adapter.getGuestByIdAndPrintInfo(2)
+    adapter.getGuestByIdAndPrintInfo(3)
 }
