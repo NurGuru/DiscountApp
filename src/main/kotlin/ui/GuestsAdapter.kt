@@ -23,9 +23,9 @@ class GuestsAdapter(
         }
     }
 
-    fun getGuestsWithStatus(status: Status)  {
-         val guestWithStatus = guestsUseCase.getGuestListByStatus(status)
-        for (guest in guestWithStatus){
+    fun getGuestsWithStatus(status: Status) {
+        guestsUseCase.getGuestListByStatus(status)
+        for (guest in guestsUseCase.getGuestListByStatus(status)) {
             println("У гостя ${guest.name} статус ${guest.status}")
         }
     }
