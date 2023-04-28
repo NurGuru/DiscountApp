@@ -19,7 +19,7 @@ data class Guest(
     val number: Long,
     val visits: Int,
     val moneySpent: Int,
-    var status: Status = Status.NEW,
-    var discount: Discount = Discount.NONE,
+    val status: Status = Status.NEW,
+    val discount: Discount = Discount.NONE,
 
 )
