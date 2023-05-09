@@ -21,5 +21,8 @@ data class Guest(
     val moneySpent: Int,
     val status: Status = Status.NEW,
     val discount: Discount = Discount.NONE,
-
-)
+) {
+    override fun toString(): String {
+        return "$id|$name|$number|$visits|$moneySpent|$status|$discount"
+    }
+}
