@@ -1,12 +1,16 @@
 package ui
 
 import data.model.Status
+import data.source.DataEntry
 import domain.AddVisitsUseCase
+import domain.ChangeMoneySpentUseCase
 import domain.GuestsUseCase
 
 class GuestsAdapter(
     private val guestsUseCase: GuestsUseCase,
     private val addVisitsUseCase: AddVisitsUseCase,
+    private val changeMoneySpentUseCase: ChangeMoneySpentUseCase,
+    private val input: DataEntry,
 ) {
     fun getGuestByIdAndPrintInfo(id: Int) {
         val guest = guestsUseCase.getGuestById(id)
@@ -32,8 +36,15 @@ class GuestsAdapter(
         }
     }
 
-    fun addVisitsToGuest(id: Int){
+    fun addVisitsToGuest(id: Int) {
         println("Сколько посещений добавить гостю?")
-        addVisitsUseCase.addVisits(id)
+        val input = input.enterInt()
+        addVisitsUseCase.addVisits(id, input)
+    }
+
+    fun addMoneySpentToGuest(id: Int) {
+        println("Какую сумму оставил гостю?")
+        val input = input.enterInt()
+        changeMoneySpentUseCase.changeMoneySpent(id, input)
     }
 }
