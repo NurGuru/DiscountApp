@@ -7,19 +7,27 @@ object Di {
     //зависимости для слоя data
     fun createFileLoader(): FileLoader = FileLoader()
     fun createCsvParsr(): CsvParser = CsvParser()
-    fun createSaver():Saver= Saver()
+    fun createSaver(): Saver = Saver()
     fun createDataSource(): GuestsDataSource = GuestsDataSourceImpl(createCsvParsr(), createFileLoader())
     fun createRepository(): GuestsRepository = GuestsRepositoryImpl(createDataSource())
+    fun createDataEntry(): DataEntry = DataEntry()
 
     //зависимости для слоя domain
     fun createGuestUseCase(): GuestsUseCase = GuestsUseCaseImpl(createRepository())
-    fun createAddVisitsUseCase(): AddVisitsUseCase = AddVisitsUseCaseImpl(createGuestUseCase(), createRepository(),
+    fun createAddVisitsUseCase(): AddVisitsUseCase = AddVisitsUseCaseImpl(
+        createGuestUseCase(), createRepository(),
         createSaver()
+    )
+    fun createChangeMoneySpentUseCase(): ChangeMoneySpentUseCase = ChangeMoneySpentUseCaseImpl(
+        createGuestUseCase(),
+        createRepository(), createSaver()
     )
 
     //зависимости для слоя UI
     fun createGuestAdapter() = GuestsAdapter(
         guestsUseCase = createGuestUseCase(),
-        addVisitsUseCase = createAddVisitsUseCase()
+        addVisitsUseCase = createAddVisitsUseCase(),
+        changeMoneySpentUseCase =createChangeMoneySpentUseCase(),
+        input = createDataEntry(),
     )
 }

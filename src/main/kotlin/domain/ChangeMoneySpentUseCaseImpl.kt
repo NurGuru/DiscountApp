@@ -2,18 +2,17 @@ package domain
 
 import data.source.Saver
 
-class AddVisitsUseCaseImpl(
+class ChangeMoneySpentUseCaseImpl(
     private val guestGetter: GuestsUseCase,
     private val repository: GuestsRepository,
     private val saver: Saver,
-) : AddVisitsUseCase {
-    override fun addVisits(id: Int, addingVisitsCount: Int) {
-
+) : ChangeMoneySpentUseCase {
+    override fun changeMoneySpent(id: Int, addingMoneySpentCount: Int) {
         var listOfGuests = repository.getGuests()
 
         listOfGuests = listOfGuests.map {
             if (it.id == guestGetter.getGuestById(id)?.id) {
-                it.copy(visits = it.visits + addingVisitsCount)
+                it.copy(moneySpent = it.moneySpent + addingMoneySpentCount)
             } else it
         }
         saver.saveChangesInText(listOfGuests)

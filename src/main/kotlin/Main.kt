@@ -17,4 +17,9 @@ fun main() {
     третья фича - добавлять посещения гостю по айди
      */
     adapter.addVisitsToGuest(3)
+
+    /**
+    четвертая фича - менять сумму потраченных денег гостя по айди
+     */
+    adapter.addMoneySpentToGuest(3)
 }
