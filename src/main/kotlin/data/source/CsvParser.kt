@@ -6,4 +6,5 @@ class CsvParser {
         lines.map { parse(it, delimiter) }.toList()
 
     fun parse(line: String, delimiter: Char): List<String> = line.split(delimiter, ignoreCase = false)
+
 }

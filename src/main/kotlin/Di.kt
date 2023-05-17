@@ -5,29 +5,41 @@ import ui.GuestsAdapter
 
 object Di {
     //зависимости для слоя data
-    fun createFileLoader(): FileLoader = FileLoader()
+    fun createFileLoader(): FileHandler = FileHandler()
+
     fun createCsvParsr(): CsvParser = CsvParser()
-    fun createSaver(): Saver = Saver()
-    fun createDataSource(): GuestsDataSource = GuestsDataSourceImpl(createCsvParsr(), createFileLoader())
+
+    fun createMultiThreading(): MultiThreading = MultiThreading(createFileLoader())
+
+
+    fun createDataSource(): GuestsDataSource =
+        GuestsDataSourceImpl(createCsvParsr(), createFileLoader(), createMultiThreading())
+
     fun createRepository(): GuestsRepository = GuestsRepositoryImpl(createDataSource())
+
     fun createDataEntry(): DataEntry = DataEntry()
 
     //зависимости для слоя domain
-    fun createGuestUseCase(): GuestsUseCase = GuestsUseCaseImpl(createRepository())
-    fun createAddVisitsUseCase(): AddVisitsUseCase = AddVisitsUseCaseImpl(
-        createGuestUseCase(), createRepository(),
-        createSaver()
+
+    fun createDiscountApplierUseCase(): DiscountApplierUseCase = DiscountApplierUseCase()
+
+    fun createSaveGuestsListUseCase(): SaveGuestsListUseCase = SaveGuestsListUseCase(createRepository())
+
+    fun createAdder(): ApplyDiscountUseCase =
+        ApplyDiscountUseCase(createDiscountApplierUseCase(), createRepository(), createSaveGuestsListUseCase())
+
+    fun createChangeMoneySpentUseCase(): AddMoneySpentUseCase = AddMoneySpentUseCase(
+        createRepository(), createAdder()
     )
-    fun createChangeMoneySpentUseCase(): ChangeMoneySpentUseCase = ChangeMoneySpentUseCaseImpl(
-        createGuestUseCase(),
-        createRepository(), createSaver()
-    )
+
+    fun createAddVisitsUseCase(): AddVisitsUseCase =
+        AddVisitsUseCase(createRepository(), createAdder())
 
     //зависимости для слоя UI
     fun createGuestAdapter() = GuestsAdapter(
-        guestsUseCase = createGuestUseCase(),
+        repository = createRepository(),
         addVisitsUseCase = createAddVisitsUseCase(),
-        changeMoneySpentUseCase =createChangeMoneySpentUseCase(),
+        changeMoneySpentUseCase = createChangeMoneySpentUseCase(),
         input = createDataEntry(),
     )
 }
