@@ -1,4 +1,5 @@
 import data.repository.GuestsRepositoryImpl
+import data.repository.OrdersRepositoryImpl
 import data.source.*
 import domain.*
 import ui.GuestsAdapter
@@ -12,32 +13,40 @@ object Di {
     fun createMultiThreading(): MultiThreading = MultiThreading(createFileLoader())
 
 
-    fun createDataSource(): GuestsDataSource =
+    fun createGuestsDataSource(): GuestsDataSource =
         GuestsDataSourceImpl(createCsvParsr(), createFileLoader(), createMultiThreading())
 
-    fun createRepository(): GuestsRepository = GuestsRepositoryImpl(createDataSource())
+    fun createGuestsRepository(): GuestsRepository = GuestsRepositoryImpl(createGuestsDataSource())
 
     fun createDataEntry(): DataEntry = DataEntry()
+
+    fun createOrdersDataSource(): OrdersDataSource =
+        OrdersDataSourceImpl(createCsvParsr(), createFileLoader(), createMultiThreading())
+
+    fun createOrdersRepository(): OrdersRepository = OrdersRepositoryImpl(createOrdersDataSource())
 
     //зависимости для слоя domain
 
     fun createDiscountApplierUseCase(): DiscountApplierUseCase = DiscountApplierUseCase()
 
-    fun createSaveGuestsListUseCase(): SaveGuestsListUseCase = SaveGuestsListUseCase(createRepository())
+    fun createSaveGuestsListUseCase(): SaveGuestsListUseCase = SaveGuestsListUseCase(createGuestsRepository())
 
     fun createAdder(): ApplyDiscountUseCase =
-        ApplyDiscountUseCase(createDiscountApplierUseCase(), createRepository(), createSaveGuestsListUseCase())
+        ApplyDiscountUseCase(createDiscountApplierUseCase(), createGuestsRepository(), createSaveGuestsListUseCase())
 
     fun createChangeMoneySpentUseCase(): AddMoneySpentUseCase = AddMoneySpentUseCase(
-        createRepository(), createAdder()
+        createGuestsRepository(), createAdder()
     )
 
     fun createAddVisitsUseCase(): AddVisitsUseCase =
-        AddVisitsUseCase(createRepository(), createAdder())
+        AddVisitsUseCase(createGuestsRepository(), createAdder())
+
+    fun createOrdersUseCase():OrdersUseCase = OrdersUseCase(createOrdersRepository())
 
     //зависимости для слоя UI
     fun createGuestAdapter() = GuestsAdapter(
-        repository = createRepository(),
+        guestsRepository = createGuestsRepository(),
+        ordersUseCase= createOrdersUseCase(),
         addVisitsUseCase = createAddVisitsUseCase(),
         changeMoneySpentUseCase = createChangeMoneySpentUseCase(),
         input = createDataEntry(),

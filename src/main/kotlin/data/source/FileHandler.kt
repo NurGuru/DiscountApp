@@ -7,6 +7,8 @@ class FileHandler {
     fun readFromTextFile(path: String): List<String> {
 
         println("При загрузке текста из файла работатет поток: ${Thread.currentThread().name}\n")
+        /**добавил для наглядности,
+        чтоб было видно, что загрузка файлов и остальная логика работают в разных потоках*/
 
         return if (File(path).exists()) {
             File(path)
@@ -17,7 +19,6 @@ class FileHandler {
         } else {
             emptyList()
         }
-
     }
 
     fun saveText(path: String, text: String) =
