@@ -2,6 +2,7 @@ package data.source
 
 object Constants {
     const val GUESTS_FILE_PATH = "src/main/resources/guestsList.csv"
+    const val ORDERS_FILE_PATH = "src/main/resources/ordersList.csv"
     const val DELIMITER_SLASH = '|'
     const val COUNT_TO_GET_STATUS_GOOD = 10
     const val COUNT_TO_GET_STATUS_VIP = 50000

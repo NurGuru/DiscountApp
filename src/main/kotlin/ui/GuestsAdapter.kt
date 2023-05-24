@@ -2,12 +2,11 @@ package ui
 
 import domain.model.Status
 import data.source.DataEntry
-import domain.AddVisitsUseCase
-import domain.AddMoneySpentUseCase
-import domain.GuestsRepository
+import domain.*
 
 class GuestsAdapter(
-    private val repository: GuestsRepository,
+    private val guestsRepository: GuestsRepository,
+    private val ordersUseCase: OrdersUseCase,
     private val addVisitsUseCase: AddVisitsUseCase,
     private val changeMoneySpentUseCase: AddMoneySpentUseCase,
     private val input: DataEntry,
@@ -23,7 +22,7 @@ class GuestsAdapter(
      * [consoleApp] - имитация консольного приложения, чтоб легко посмотреть что все работает
      */
     fun getGuestByIdAndPrintInfo(id: Int) {
-        val guest = repository.getGuestById(id)
+        val guest = guestsRepository.getGuestById(id)
         if (guest != null) {
             println(
                 """
@@ -40,7 +39,7 @@ class GuestsAdapter(
     }
 
     fun getGuestsWithStatus(status: Status) {
-        for (guest in repository.getGuestListByStatus(status)) {
+        for (guest in guestsRepository.getGuestListByStatus(status)) {
             println("У гостя ${guest.name} статус ${guest.status}")
         }
     }
@@ -51,14 +50,14 @@ class GuestsAdapter(
     }
 
     private fun addVisitsToGuest(id: Int) {
-        val guest = repository.getGuestById(id)
+        val guest = guestsRepository.getGuestById(id)
         println("\nСколько посещений добавить гостю ${guest!!.name}?")
         val input = input.enterInt()
         addVisitsUseCase.addVisits(id, input)
     }
 
     private fun addMoneySpentToGuest(id: Int) {
-        val guest = repository.getGuestById(id)
+        val guest = guestsRepository.getGuestById(id)
         println("Какую сумму оставил гостю ${guest!!.name}?")
         val input = input.enterInt()
         changeMoneySpentUseCase.addMoneySpent(id, input)
@@ -67,8 +66,10 @@ class GuestsAdapter(
     fun consoleApp() {
         while (true) {
             println("Работатет поток: ${Thread.currentThread().name}\n")
+            /**добавил для наглядности,
+            чтоб было видно, что загрузка файлов и остальная логика работают в разных потоках*/
 
-            println("Меню: 1- Найти гостя, 2- Список гостей по статусу, 3- Добавить гостю данные, 0- выход")
+            println("Меню: 1- Найти гостя, 2- Список гостей по статусу, 3- Добавить гостю данные, 4- Смотреть статистику по чекам, 0- выход")
 
             when (readln().toInt()) {
                 0 -> break
@@ -102,6 +103,16 @@ class GuestsAdapter(
                     println("Введите id гостя")
                     val input = input.enterInt()
                     changeGuestVisitsAndMoneySpent(input)
+                }
+
+                4 -> {
+                    println("1- Показать сумму всех чеков, 2- Показать средний чек")
+                    when (readln().toInt()) {
+                        1 -> println("Общая сумма всех чеков = ${ordersUseCase.getSumOfAllOrders()}")
+
+                        2 -> println("Средний чек = ${ordersUseCase.getAverageOrderSum()}")
+                    }
+
                 }
 
                 else -> println("Такой команды нет, выберите нужную команду.")
